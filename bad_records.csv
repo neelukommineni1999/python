@@ -1,0 +1,3 @@
+row,error
+1002 | Office Chair | Furniture | 4999,Duplicate detected for product_id=1002
+1001 | Wireless Mouse | Electronics | 799,Duplicate detected for product_id=1001

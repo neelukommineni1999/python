@@ -1,38 +1,23 @@
-import json
+import csv
 
-# Vendor Data
-
-vendor1 = [
-    ["Product ID", "Product Name", "Price", "Category"],
-    ["1001", "Wireless Mouse", "799", "Electronics"],
-    ["1002", "Office Chair", "4999", "Furniture"],
-    ["1003", "Laptop Stand", "", "Electronics"]  # missing price
-]
-
-vendor2 = [
-    ["id", "name", "category", "price"],
-    ["1002", "Office Chair", "Furniture", "4999"],
-    ["1004", "Desk Lamp", "Home", "1299"],
-    ["1005", "Water Bottle", "Home", "299"]
-]
-
-vendor3 = [
-    ["item_code", "item_name", "item_group", "cost"],
-    ["1006", "Notebook", "Stationery", "49"],
-    ["1007", "Pen", "Stationery", "20"],
-    ["1001", "Wireless Mouse", "Electronics", "799"]
-]
-
-# Column Mapping (Standard Schema)
+# READ CSV FILES
+def read_csv(file_path):
+    with open(file_path, "r") as f:
+        return list(csv.reader(f))
 
 
+vendor1 = read_csv("vendor1.csv")
+vendor2 = read_csv("vendor2.csv")
+vendor3 = read_csv("vendor3.csv")
+
+
+# STANDARDIZE FUNCTION
 def standardize_row(row, headers):
     mapping = {}
 
     for i in range(len(headers)):
         mapping[headers[i]] = row[i]
 
-    # Convert to standard schema
     return {
         "product_id": mapping.get("Product ID") or mapping.get("id") or mapping.get("item_code"),
         "product_name": mapping.get("Product Name") or mapping.get("name") or mapping.get("item_name"),
@@ -40,8 +25,8 @@ def standardize_row(row, headers):
         "price": mapping.get("Price") or mapping.get("price") or mapping.get("cost")
     }
 
-# Main Processing Function
 
+# MAIN PROCESSING LOGIC
 def process_vendor_data(vendors):
     clean_data = []
     invalid_data = []
@@ -57,53 +42,72 @@ def process_vendor_data(vendors):
 
                 product_id = record["product_id"]
                 name = record["product_name"]
-                price = record["price"]
                 category = record["category"]
-                
-                # Validation Rules
+                price = record["price"] or "0"
 
+                # VALIDATION
                 if not product_id or not name or not category:
-                    raise ValueError(f"Missing required fields in product {product_id}")
+                    raise ValueError(f"Missing required fields for product_id={product_id}")
 
-                if price == "" or price is None:
-                    raise ValueError(f"Missing price for product {product_id}")
-
-                # Convert price
+                # convert price
                 try:
-                    record["price"] = int(price)
+                    price = int(price)
                 except:
-                    raise ValueError(f"Invalid price for product {product_id}")
+                    raise ValueError(f"Invalid price for product_id={product_id}")
 
-                # Duplicate check
+                # duplicate check
                 if product_id in seen_ids:
-                    raise ValueError(f"Duplicate product_id {product_id}")
+                    raise ValueError(f"Duplicate detected for product_id={product_id}")
 
                 seen_ids.add(product_id)
 
-                # Add to clean data
-                clean_data.append(record)
+                clean_data.append({
+                    "product_id": product_id,
+                    "product_name": name,
+                    "category": category,
+                    "price": price
+                })
 
             except ValueError as e:
                 error_log.append(str(e))
-                invalid_data.append({"row": row, "error": str(e)})
+                invalid_data.append({
+                    "row": row,
+                    "error": str(e)
+                })
                 print("LOG:", e)
 
     return clean_data, invalid_data, error_log
 
-# Run Pipeline
 
+# RUN PIPELINE
 all_vendors = [vendor1, vendor2, vendor3]
 
 clean_data, invalid_data, error_log = process_vendor_data(all_vendors)
 
-# Output Results
 
-print("\nCLEAN DATA:")
-print(json.dumps(clean_data, indent=4))
+# WRITE CLEAN DATA
+with open("clean_data.csv", "w", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=["product_id", "product_name", "category", "price"])
+    writer.writeheader()
+    writer.writerows(clean_data)
 
-print("\nINVALID DATA:")
-print(json.dumps(invalid_data, indent=4))
 
-print("\nERROR LOG:")
-for err in error_log:
-    print("-", err)
+# WRITE BAD RECORDS
+with open("bad_records.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["row", "error"])
+
+    for item in invalid_data:
+        writer.writerow([" | ".join(item["row"]), item["error"]])
+
+
+# WRITE ERROR LOG
+with open("error.log1", "w") as f:
+    for err in error_log:
+        f.write(err + "\n")
+
+
+# FINAL SUMMARY
+print("\nPIPELINE COMPLETED")
+print("Clean Records:", len(clean_data))
+print("Bad Records:", len(invalid_data))
