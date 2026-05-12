@@ -1,0 +1,30 @@
+[
+    {
+        "product_id": "101",
+        "product_name": "USB Cable",
+        "category": "Electronics",
+        "price": "199",
+        "stock": "25"
+    },
+    {
+        "product_id": "102",
+        "product_name": "Notebook",
+        "category": "Stationery",
+        "price": 0,
+        "stock": "100"
+    },
+    {
+        "product_id": "103",
+        "product_name": "Water Bottle",
+        "category": "Home",
+        "price": "299",
+        "stock": 0
+    },
+    {
+        "product_id": "104",
+        "product_name": "USB Cable",
+        "category": "Electronics",
+        "price": "199",
+        "stock": "25"
+    }
+]

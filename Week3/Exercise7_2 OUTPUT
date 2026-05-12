@@ -1,0 +1,7 @@
+"customer_id","order_date","amount","status"
+2,"2024-02-01",700,"completed"
+1,"2024-03-01",300,"returned"
+3,"2024-03-05",250,"completed"
+2,"2024-02-01",700,"completed"
+1,"2024-03-01",300,"returned"
+3,"2024-03-05",250,"completed"

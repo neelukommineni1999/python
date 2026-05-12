@@ -1,0 +1,4 @@
+"transaction_id","customer_id","status","amount","updated_at","source_system","previous_status"
+1,101,"completed",500,"2024-01-05","core","pending"
+2,102,"failed",700,"2024-01-06","core","pending"
+3,103,"completed",300,"2024-01-03","core",NULL
