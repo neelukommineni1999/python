@@ -1,0 +1,6 @@
+user_id,event_type,country,event_date
+101,login,USA,2025-05-01
+102,purchase,India,2025-05-01
+103,logout,USA,2025-05-02
+104,login,Canada,2025-05-02
+105,purchase,India,2025-05-03
