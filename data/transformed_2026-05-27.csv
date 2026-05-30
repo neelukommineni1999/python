@@ -1,0 +1,5 @@
+shipment_id,region,weight,region_code
+S005,North,130,N1
+S006,South,210,S1
+S007,East,160,E1
+S008,West,190,W1
