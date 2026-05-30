@@ -1,0 +1,12 @@
+# Spark output files
+output/
+*/output/
+*.parquet
+*.crc
+_SUCCESS
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Virtual environment
+spark-env/
